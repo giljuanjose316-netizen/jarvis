@@ -1,252 +1,121 @@
-/*
- * ==========================================
- * JARVIS - COMMANDS
- * ==========================================
- *
- * Este archivo contiene las acciones que
- * Jarvis sabe ejecutar.
- */
-
 const JarvisCommands = {
 
-  /*
-   * ------------------------------------------
-   * SALUDO
-   * ------------------------------------------
-   */
+    greeting() {
+        return "Buenos días, señor. ¿En qué puedo ayudarle?";
+    },
 
-  greeting() {
-    return "Saludos, señor.";
-  },
+    status() {
+        return "Todos mis sistemas principales están funcionando correctamente, señor.";
+    },
 
+    time() {
+        const now = new Date();
 
-  /*
-   * ------------------------------------------
-   * ESTADO
-   * ------------------------------------------
-   */
+        return `Son las ${now.toLocaleTimeString("es-CO", {
+            hour: "2-digit",
+            minute: "2-digit"
+        })}, señor.`;
+    },
 
-  status() {
-    return "Todos los sistemas básicos están funcionando.";
-  },
+    date() {
+        const now = new Date();
 
+        return `Hoy es ${now.toLocaleDateString("es-CO", {
+            weekday: "long",
+            day: "numeric",
+            month: "long",
+            year: "numeric"
+        })}, señor.`;
+    },
 
-  /*
-   * ------------------------------------------
-   * HORA
-   * ------------------------------------------
-   */
+    help() {
+        return "Actualmente puedo decirle la hora, la fecha, informar sobre mi estado y responder a saludos.";
+    },
 
-  time() {
+    sleep() {
+        return "Entrando en modo de espera, señor.";
+    },
 
-    const now = new Date();
+    unknown() {
+        return "No he entendido el comando, señor.";
+    },
 
-    const time = now.toLocaleTimeString(
-      "es-CO",
-      {
-        hour: "2-digit",
-        minute: "2-digit"
-      }
-    );
+    interpretCommand(command) {
 
-    return `La hora actual es ${time}.`;
-  },
+        const text = command
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .trim();
 
+        // SALUDOS
+        if (
+            text.includes("hola") ||
+            text.includes("buenos dias") ||
+            text.includes("buenas tardes") ||
+            text.includes("buenas noches") ||
+            text.includes("buen dia") ||
+            text.includes("kio")
+        ) {
+            return this.greeting();
+        }
 
-  /*
-   * ------------------------------------------
-   * FECHA
-   * ------------------------------------------
-   */
+        // ESTADO
+        if (
+            text.includes("como estas") ||
+            text.includes("como te encuentras") ||
+            text.includes("estado del sistema") ||
+            text.includes("estado de los sistemas") ||
+            text.includes("estas funcionando") ||
+            text.includes("funcionas")
+        ) {
+            return this.status();
+        }
 
-  date() {
+        // HORA
+        if (
+            text.includes("que hora es") ||
+            text.includes("dime la hora") ||
+            text.includes("dime que hora") ||
+            text.includes("me dices la hora") ||
+            text.includes("tienes la hora") ||
+            text.includes("hora actual")
+        ) {
+            return this.time();
+        }
 
-    const now = new Date();
+        // FECHA
+        if (
+            text.includes("que fecha es") ||
+            text.includes("dime la fecha") ||
+            text.includes("que dia es") ||
+            text.includes("fecha de hoy") ||
+            text.includes("dia de hoy")
+        ) {
+            return this.date();
+        }
 
-    const date = now.toLocaleDateString(
-      "es-CO",
-      {
-        weekday: "long",
-        year: "numeric",
-        month: "long",
-        day: "numeric"
-      }
-    );
+        // AYUDA
+        if (
+            text.includes("que puedes hacer") ||
+            text.includes("que sabes hacer") ||
+            text.includes("ayuda") ||
+            text.includes("tus comandos") ||
+            text.includes("tus funciones")
+        ) {
+            return this.help();
+        }
 
-    return `Hoy es ${date}.`;
-  },
+        // DORMIR
+        if (
+            text.includes("duerme") ||
+            text.includes("dormir") ||
+            text.includes("modo espera") ||
+            text.includes("entra en modo espera")
+        ) {
+            return this.sleep();
+        }
 
-
-  /*
-   * ------------------------------------------
-   * AYUDA
-   * ------------------------------------------
-   */
-
-  help() {
-
-    return (
-      "Actualmente puedo decirte la hora, " +
-      "la fecha, responder saludos y comprobar " +
-      "mi estado."
-    );
-
-  },
-
-
-  /*
-   * ------------------------------------------
-   * DESPEDIDA
-   * ------------------------------------------
-   */
-
-  sleep() {
-
-    return "Entendido, señor. Quedo en espera.";
-
-  }
-
+        return this.unknown();
+    }
 };
-
-
-/*
- * ==========================================
- * INTERPRETADOR
- * ==========================================
- */
-
-function interpretCommand(command) {
-
-  const text =
-    command
-      .trim()
-      .toLowerCase();
-
-
-  /*
-   * SALUDO
-   */
-
-  if (
-    text.includes("hola") ||
-    text.includes("buenos días") ||
-    text.includes("buenos dias") ||
-    text.includes("buenas tardes") ||
-    text.includes("buenas noches")
-  ) {
-
-    return {
-      action: "greeting",
-      response: JarvisCommands.greeting()
-    };
-
-  }
-
-
-  /*
-   * ESTADO
-   */
-
-  if (
-    text.includes("cómo estás") ||
-    text.includes("como estas") ||
-    text.includes("estado")
-  ) {
-
-    return {
-      action: "status",
-      response: JarvisCommands.status()
-    };
-
-  }
-
-
-  /*
-   * HORA
-   */
-
-  if (
-    text.includes("qué hora") ||
-    text.includes("que hora") ||
-    text.includes("hora")
-  ) {
-
-    return {
-      action: "time",
-      response: JarvisCommands.time()
-    };
-
-  }
-
-
-  /*
-   * FECHA
-   */
-
-  if (
-    text.includes("qué fecha") ||
-    text.includes("que fecha") ||
-    text.includes("qué día") ||
-    text.includes("que dia") ||
-    text.includes("fecha")
-  ) {
-
-    return {
-      action: "date",
-      response: JarvisCommands.date()
-    };
-
-  }
-
-
-  /*
-   * AYUDA
-   */
-
-  if (
-    text.includes("qué puedes hacer") ||
-    text.includes("que puedes hacer") ||
-    text.includes("ayuda")
-  ) {
-
-    return {
-      action: "help",
-      response: JarvisCommands.help()
-    };
-
-  }
-
-
-  /*
-   * DORMIR
-   */
-
-  if (
-    text.includes("descansa") ||
-    text.includes("duerme") ||
-    text.includes("desactívate") ||
-    text.includes("desactivarte")
-  ) {
-
-    return {
-      action: "sleep",
-      response: JarvisCommands.sleep()
-    };
-
-  }
-
-
-  /*
-   * COMANDO DESCONOCIDO
-   */
-
-  return {
-
-    action: "unknown",
-
-    response:
-      "Todavía no tengo una acción programada para ese comando."
-
-  };
-
-}
