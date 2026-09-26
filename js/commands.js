@@ -85,15 +85,14 @@ const JarvisCommands = {
         }
 
         // FECHA
-        if (
-            text.includes("que fecha es") ||
-            text.includes("dime la fecha") ||
-            text.includes("que dia es") ||
-            text.includes("fecha de hoy") ||
-            text.includes("dia de hoy")
-        ) {
-            return this.date();
-        }
+if (
+    text.includes("fecha") ||
+    text.includes("que dia") ||
+    text.includes("dia de hoy") ||
+    text.includes("hoy")
+) {
+    return this.date();
+}
 
         // AYUDA
         if (
