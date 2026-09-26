@@ -125,7 +125,7 @@ const Jarvis = {
 
 
     const result =
-      interpretCommand(command);
+      jarviscommands.interpretCommand(command);
 
 
     console.log(
