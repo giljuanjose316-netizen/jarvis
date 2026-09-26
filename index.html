@@ -4,79 +4,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>JARVIS</title>
 
     <style>
-        * {
-            box-sizing: border-box;
-        }
-
         body {
             margin: 0;
             min-height: 100vh;
             background: #050505;
             color: #00e5ff;
-            font-family: Arial, Helvetica, sans-serif;
+            font-family: Arial, sans-serif;
 
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
-        .container {
+        .jarvis-container {
             width: 90%;
-            max-width: 800px;
+            max-width: 700px;
             padding: 40px;
-
             text-align: center;
 
             border: 1px solid #00e5ff;
             border-radius: 20px;
 
-            box-shadow:
-                0 0 20px rgba(0, 229, 255, 0.2),
-                inset 0 0 20px rgba(0, 229, 255, 0.05);
+            box-shadow: 0 0 30px rgba(0, 229, 255, 0.25);
         }
 
         h1 {
-            margin: 0 0 35px 0;
-            font-size: 52px;
+            margin-bottom: 35px;
+            font-size: 48px;
             letter-spacing: 8px;
         }
 
-        .panel {
-            margin-bottom: 20px;
+        .info {
+            margin: 20px 0;
             padding: 18px;
 
             background: #101010;
-            border: 1px solid #1b5963;
-            border-radius: 12px;
+            border: 1px solid #164d55;
+            border-radius: 10px;
 
             text-align: left;
         }
 
         .label {
             margin-bottom: 8px;
-            font-size: 14px;
+            font-size: 13px;
             color: #72f1ff;
         }
 
         #status,
         #command {
-            min-height: 24px;
-            color: #ffffff;
+            color: white;
+            min-height: 22px;
         }
 
-        button {
+        #activateButton {
             margin-top: 20px;
             padding: 15px 30px;
 
-            background: #00e5ff;
-            color: #000000;
-
             border: none;
             border-radius: 10px;
+
+            background: #00e5ff;
+            color: #000;
 
             font-size: 18px;
             font-weight: bold;
@@ -84,37 +76,33 @@
             cursor: pointer;
         }
 
-        button:hover {
+        #activateButton:hover {
             opacity: 0.85;
-        }
-
-        button:active {
-            transform: scale(0.98);
         }
     </style>
 </head>
 
 <body>
 
-    <main class="container">
+    <div class="jarvis-container">
 
         <h1>JARVIS</h1>
 
-        <section class="panel">
-            <div class="label">ESTADO DEL SISTEMA</div>
+        <div class="info">
+            <div class="label">ESTADO</div>
             <div id="status">Sistema listo</div>
-        </section>
+        </div>
 
-        <section class="panel">
+        <div class="info">
             <div class="label">COMANDO</div>
             <div id="command">Comando: ninguno</div>
-        </section>
+        </div>
 
         <button id="activateButton">
             Activar micrófono
         </button>
 
-    </main>
+    </div>
 
     <script src="js/commands.js"></script>
     <script src="js/voice.js"></script>
