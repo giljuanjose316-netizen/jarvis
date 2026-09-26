@@ -1,128 +1,80 @@
+```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jarvis</title>
 
-  <title>Jarvis</title>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #050505;
+            color: #00e5ff;
+            font-family: Arial, sans-serif;
+        }
 
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+        .container {
+            width: 90%;
+            max-width: 700px;
+            text-align: center;
+            padding: 40px;
+            border: 1px solid #00e5ff;
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(0, 229, 255, 0.25);
+        }
 
-    body {
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: #080b12;
-      color: #ffffff;
-      font-family: Arial, sans-serif;
-    }
+        h1 {
+            font-size: 48px;
+            margin-bottom: 30px;
+        }
 
-    .jarvis {
-      width: min(700px, 90%);
-      text-align: center;
-      padding: 40px;
-      border: 1px solid #263247;
-      border-radius: 20px;
-      background: #101621;
-    }
+        #status,
+        #command {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+            background: #101010;
+        }
 
-    h1 {
-      font-size: 48px;
-      margin-bottom: 10px;
-    }
+        button {
+            padding: 15px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background: #00e5ff;
+            color: #000;
+        }
 
-    .status {
-      margin: 20px 0;
-      font-size: 18px;
-      color: #8fa3bd;
-    }
-
-    .orb {
-      width: 120px;
-      height: 120px;
-      margin: 30px auto;
-      border-radius: 50%;
-      border: 3px solid #5c9cff;
-      box-shadow: 0 0 25px rgba(92, 156, 255, 0.5);
-      transition: 0.3s;
-    }
-
-    .orb.active {
-      transform: scale(1.15);
-      box-shadow:
-        0 0 30px rgba(92, 156, 255, 0.8),
-        0 0 70px rgba(92, 156, 255, 0.4);
-    }
-
-    .command {
-      margin-top: 20px;
-      padding: 15px;
-      min-height: 50px;
-      border-radius: 10px;
-      background: #080b12;
-      color: #b8c7dc;
-    }
-
-    button {
-      margin-top: 25px;
-      padding: 12px 24px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      background: #5c9cff;
-      color: white;
-      font-size: 16px;
-    }
-
-    button:hover {
-      opacity: 0.85;
-    }
-
-    button:disabled {
-      opacity: 0.6;
-      cursor: default;
-    }
-  </style>
+        button:hover {
+            opacity: 0.85;
+        }
+    </style>
 </head>
 
 <body>
 
-  <main class="jarvis">
+    <div class="container">
+        <h1>JARVIS</h1>
 
-    <h1>JARVIS</h1>
+        <div id="status">Sistema listo</div>
 
-    <div id="status" class="status">
-      Inicializando...
+        <div id="command">Comando: ninguno</div>
+
+        <button id="activateButton">
+            Activar micrófono
+        </button>
     </div>
 
-    <div id="orb" class="orb"></div>
-
-    <div id="command" class="command">
-      Esperando activación...
-    </div>
-
-    <button id="startButton">
-      Activar micrófono
-    </button>
-
-  </main>
-
-  <!--
-    Orden importante:
-    1. commands.js
-    2. voice.js
-    3. jarvis.js
-  -->
-
-<script src="js/commands.js"></script>
-<script src="js/voice.js"></script>
-<script src="js/jarvis.js"></script>
+    <script src="js/commands.js"></script>
+    <script src="js/voice.js"></script>
+    <script src="js/jarvis.js"></script>
 
 </body>
 </html>
+```
