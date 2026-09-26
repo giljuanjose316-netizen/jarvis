@@ -3,61 +3,632 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Jarvis</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #080b12;
+      color: #ffffff;
+      font-family: Arial, sans-serif;
+    }
+
+    .jarvis {
+      width: min(700px, 90%);
+      text-align: center;
+      padding: 40px;
+      border: 1px solid #263247;
+      border-radius: 20px;
+      background: #101621;
+    }
+
+    h1 {
+      font-size: 48px;
+      margin-bottom: 10px;
+    }
+
+    .status {
+      margin: 20px 0;
+      font-size: 18px;
+      color: #8fa3bd;
+    }
+
+    .orb {
+      width: 120px;
+      height: 120px;
+      margin: 30px auto;
+      border-radius: 50%;
+      border: 3px solid #5c9cff;
+      box-shadow: 0 0 25px rgba(92, 156, 255, 0.5);
+      transition: 0.3s;
+    }
+
+    .orb.active {
+      transform: scale(1.15);
+      box-shadow:
+        0 0 30px rgba(92, 156, 255, 0.8),
+        0 0 70px rgba(92, 156, 255, 0.4);
+    }
+
+    .command {
+      margin-top: 20px;
+      padding: 15px;
+      min-height: 50px;
+      border-radius: 10px;
+      background: #080b12;
+      color: #b8c7dc;
+    }
+
+    button {
+      margin-top: 25px;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #5c9cff;
+      color: white;
+      font-size: 16px;
+    }
+
+    button:hover {
+      opacity: 0.85;
+    }
+  </style>
 </head>
+
 <body>
-  <h1>Jarvis</h1>
-  <p>Asistente personal orientado a voz y desarrollo.</p>
-  <p>Proyecto en construcción.</p>
+
+  <main class="jarvis">
+
+    <h1>JARVIS</h1>
+
+    <div id="status" class="status">
+      Inicializando...
+    </div>
+
+    <div id="orb" class="orb"></div>
+
+    <div id="command" class="command">
+      Esperando activación...
+    </div>
+
+    <button id="startButton">
+      Activar micrófono
+    </button>
+
+  </main>
+
   <script>
-  const SpeechRecognition =
-    window.SpeechRecognition || window.webkitSpeechRecognition;
 
-  if (!SpeechRecognition) {
-    document.body.insertAdjacentHTML(
-      "beforeend",
-      "<p>Este navegador no admite reconocimiento de voz.</p>"
-    );
-  } else {
-    const recognition = new SpeechRecognition();
+    /*
+     * ==========================================
+     * JARVIS - PRIMERA VERSIÓN FUNCIONAL
+     * ==========================================
+     */
 
-    recognition.lang = "es-CO";
-    recognition.continuous = true;
-    recognition.interimResults = false;
+    const SpeechRecognition =
+      window.SpeechRecognition ||
+      window.webkitSpeechRecognition;
 
-    recognition.onresult = function (event) {
-      const result = event.results[event.results.length - 1][0].transcript
-        .trim()
-        .toLowerCase();
+    const statusElement =
+      document.getElementById("status");
 
-      console.log("Escuchado:", result);
+    const commandElement =
+      document.getElementById("command");
 
-      if (result.includes("jarvis")) {
-        document.body.insertAdjacentHTML(
-          "beforeend",
-          "<p id='jarvis-response'>¿Sí, señor?</p>"
+    const orb =
+      document.getElementById("orb");
+
+    const startButton =
+      document.getElementById("startButton");
+
+
+    /*
+     * ==========================================
+     * CONFIGURACIÓN
+     * ==========================================
+     */
+
+    const WAKE_WORD = "jarvis";
+
+    let recognition = null;
+
+    let isListening = false;
+
+    let isActivated = false;
+
+
+    /*
+     * ==========================================
+     * COMPROBAR COMPATIBILIDAD
+     * ==========================================
+     */
+
+    if (!SpeechRecognition) {
+
+      statusElement.textContent =
+        "Este navegador no admite reconocimiento de voz.";
+
+      startButton.disabled = true;
+
+    } else {
+
+      recognition = new SpeechRecognition();
+
+      recognition.lang = "es-CO";
+
+      recognition.continuous = true;
+
+      recognition.interimResults = false;
+
+    }
+
+
+    /*
+     * ==========================================
+     * SÍNTESIS DE VOZ
+     * ==========================================
+     */
+
+    function speak(text) {
+
+      if (!window.speechSynthesis) {
+        return;
+      }
+
+      window.speechSynthesis.cancel();
+
+      const utterance =
+        new SpeechSynthesisUtterance(text);
+
+      utterance.lang = "es-CO";
+
+      utterance.rate = 0.95;
+
+      utterance.pitch = 0.9;
+
+      window.speechSynthesis.speak(utterance);
+    }
+
+
+    /*
+     * ==========================================
+     * ACTUALIZAR ESTADO
+     * ==========================================
+     */
+
+    function setStatus(text) {
+
+      statusElement.textContent = text;
+
+    }
+
+
+    /*
+     * ==========================================
+     * ACTIVAR JARVIS
+     * ==========================================
+     */
+
+    function activateJarvis() {
+
+      isActivated = true;
+
+      orb.classList.add("active");
+
+      setStatus("Escuchando comando...");
+
+      commandElement.textContent =
+        "Jarvis está escuchando.";
+
+      speak("¿Sí, señor?");
+
+    }
+
+
+    /*
+     * ==========================================
+     * DESACTIVAR JARVIS
+     * ==========================================
+     */
+
+    function deactivateJarvis() {
+
+      isActivated = false;
+
+      orb.classList.remove("active");
+
+      setStatus("Esperando la palabra Jarvis...");
+
+      commandElement.textContent =
+        "Esperando activación.";
+
+    }
+
+
+    /*
+     * ==========================================
+     * PROCESAR COMANDOS
+     * ==========================================
+     */
+
+    function processCommand(command) {
+
+      command =
+        command
+          .trim()
+          .toLowerCase();
+
+      commandElement.textContent =
+        "Comando: " + command;
+
+
+      /*
+       * SALUDO
+       */
+
+      if (
+        command.includes("hola") ||
+        command.includes("buenos días") ||
+        command.includes("buenas tardes") ||
+        command.includes("buenas noches")
+      ) {
+
+        speak("Saludos, señor.");
+
+        return;
+      }
+
+
+      /*
+       * ESTADO
+       */
+
+      if (
+        command.includes("cómo estás") ||
+        command.includes("como estas") ||
+        command.includes("estado")
+      ) {
+
+        speak(
+          "Todos los sistemas básicos están funcionando."
         );
 
-        // Voz de respuesta
-        const speech = new SpeechSynthesisUtterance("¿Sí, señor?");
-        speech.lang = "es-CO";
-        window.speechSynthesis.speak(speech);
+        return;
       }
-    };
 
-    recognition.onerror = function (event) {
-      console.error("Error de reconocimiento:", event.error);
-    };
 
-    recognition.onend = function () {
-      // Reinicia la escucha cuando termina el reconocimiento
-      recognition.start();
-    };
+      /*
+       * HORA
+       */
 
-    // Solicita el permiso del micrófono al iniciar
-    recognition.start();
-  }
-</script>
+      if (
+        command.includes("hora")
+      ) {
+
+        const now =
+          new Date();
+
+        const time =
+          now.toLocaleTimeString(
+            "es-CO",
+            {
+              hour: "2-digit",
+              minute: "2-digit"
+            }
+          );
+
+        speak(
+          "La hora actual es " + time
+        );
+
+        return;
+      }
+
+
+      /*
+       * FECHA
+       */
+
+      if (
+        command.includes("fecha") ||
+        command.includes("día")
+      ) {
+
+        const now =
+          new Date();
+
+        const date =
+          now.toLocaleDateString(
+            "es-CO",
+            {
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric"
+            }
+          );
+
+        speak(
+          "Hoy es " + date
+        );
+
+        return;
+      }
+
+
+      /*
+       * JARVIS
+       */
+
+      if (
+        command.includes("jarvis")
+      ) {
+
+        speak(
+          "A sus órdenes, señor."
+        );
+
+        return;
+      }
+
+
+      /*
+       * AYUDA
+       */
+
+      if (
+        command.includes("ayuda") ||
+        command.includes("qué puedes hacer") ||
+        command.includes("que puedes hacer")
+      ) {
+
+        speak(
+          "Por ahora puedo reconocer comandos de voz, responder mediante voz y ejecutar algunas acciones básicas."
+        );
+
+        return;
+      }
+
+
+      /*
+       * DESACTIVAR
+       */
+
+      if (
+        command.includes("descansa") ||
+        command.includes("desactívate") ||
+        command.includes("desactivarte")
+      ) {
+
+        speak(
+          "Entendido, señor."
+        );
+
+        deactivateJarvis();
+
+        return;
+      }
+
+
+      /*
+       * COMANDO DESCONOCIDO
+       */
+
+      speak(
+        "Todavía no tengo una acción programada para ese comando."
+      );
+
+    }
+
+
+    /*
+     * ==========================================
+     * RESULTADOS DEL RECONOCIMIENTO
+     * ==========================================
+     */
+
+    if (recognition) {
+
+      recognition.onresult =
+        function(event) {
+
+          const lastResult =
+            event.results[
+              event.results.length - 1
+            ];
+
+          const transcript =
+            lastResult[0]
+              .transcript
+              .trim()
+              .toLowerCase();
+
+
+          console.log(
+            "Reconocido:",
+            transcript
+          );
+
+
+          /*
+           * SI JARVIS ESTÁ ACTIVO
+           */
+
+          if (isActivated) {
+
+            processCommand(transcript);
+
+            /*
+             * Después de procesar el comando,
+             * vuelve al modo de espera.
+             */
+
+            setTimeout(
+              deactivateJarvis,
+              2500
+            );
+
+            return;
+          }
+
+
+          /*
+           * DETECTAR PALABRA DE ACTIVACIÓN
+           */
+
+          if (
+            transcript.includes(WAKE_WORD)
+          ) {
+
+            activateJarvis();
+
+          }
+
+        };
+
+
+      /*
+       * ========================================
+       * ERROR
+       * ========================================
+       */
+
+      recognition.onerror =
+        function(event) {
+
+          console.error(
+            "Error de reconocimiento:",
+            event.error
+          );
+
+          if (
+            event.error === "not-allowed"
+          ) {
+
+            setStatus(
+              "Permiso de micrófono denegado."
+            );
+
+            speak(
+              "Necesito permiso para utilizar el micrófono."
+            );
+
+          }
+
+        };
+
+
+      /*
+       * ========================================
+       * REINICIO AUTOMÁTICO
+       * ========================================
+       */
+
+      recognition.onend =
+        function() {
+
+          if (isListening) {
+
+            try {
+
+              recognition.start();
+
+            } catch (error) {
+
+              console.log(
+                "El reconocimiento ya está activo."
+              );
+
+            }
+
+          }
+
+        };
+
+    }
+
+
+    /*
+     * ==========================================
+     * INICIAR MICRÓFONO
+     * ==========================================
+     */
+
+    function startJarvis() {
+
+      if (!recognition) {
+        return;
+      }
+
+      if (isListening) {
+        return;
+      }
+
+      isListening = true;
+
+      setStatus(
+        "Esperando la palabra Jarvis..."
+      );
+
+      commandElement.textContent =
+        "Di: Jarvis";
+
+      try {
+
+        recognition.start();
+
+      } catch (error) {
+
+        console.error(error);
+
+      }
+
+    }
+
+
+    /*
+     * ==========================================
+     * BOTÓN
+     * ==========================================
+     */
+
+    startButton.addEventListener(
+      "click",
+      function() {
+
+        startJarvis();
+
+        startButton.textContent =
+          "Jarvis activo";
+
+        startButton.disabled = true;
+
+      }
+    );
+
+
+    /*
+     * ==========================================
+     * INICIO
+     * ==========================================
+     */
+
+    setStatus(
+      "Pulsa el botón para activar el micrófono."
+    );
+
+  </script>
+
 </body>
 </html>
-
